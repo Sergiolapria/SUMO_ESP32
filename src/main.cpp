@@ -11,7 +11,11 @@ The students must code the logic to control the robot for a sumo fight with a ot
 #define pinMotorI 33
 #define pinTrig 25
 #define pinEcho 26  
-#define suelo 2
+#define suelo 4
+#define IB1 25
+#define IA1 26
+#define IB2 27
+#define IA2 14
 Adafruit_VL6180X vl = Adafruit_VL6180X();//constructor of the sensor
 Servo motorD;
 Servo motorI;
@@ -59,6 +63,11 @@ void Medir_Distancia(){
 }
 void setup() {
   Serial.begin(9600);
+  pinMode(suelo, INPUT);
+  pinMode(IB1, OUTPUT);
+  pinMode(IA1, OUTPUT);
+  pinMode(IB2, OUTPUT);
+  pinMode(IA2, OUTPUT);
   //Wire.begin();
 
   //pinMode(pinTrig, OUTPUT);
@@ -71,6 +80,7 @@ void setup() {
 }
 void loop(){
   Medir_Distancia();
-  Serial.println(analogRead(suelo));
+  digitalWrite(IB1, LOW);
+  digitalWrite(IB2, HIGH);
   
 } 
