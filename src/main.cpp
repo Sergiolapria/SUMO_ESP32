@@ -11,7 +11,8 @@ The students must code the logic to control the robot for a sumo fight with a ot
 #define pinMotorI 33
 #define pinTrig 25
 #define pinEcho 26  
-Adafruit_VL6180X sensor;//constructor of the sensor
+#define suelo 2
+Adafruit_VL6180X vl = Adafruit_VL6180X();//constructor of the sensor
 Servo motorD;
 Servo motorI;
 long duration, distance;
@@ -40,43 +41,36 @@ void MotorI(int sentidoI){
 }
 void Medir_Distancia(){
   
-  digitalWrite(pinTrig, LOW);
-  delayMicroseconds(2);
-  digitalWrite(pinTrig, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(pinTrig, LOW);
-  duration = pulseIn(pinEcho, HIGH);
-  distance = (duration/2) / 29.1;
-  Serial.print("Distance: ");
-  Serial.print(distance);
-  Serial.println(" cm");
+  //digitalWrite(pinTrig, LOW);
+  //delayMicroseconds(2);
+ // digitalWrite(pinTrig, HIGH);
+ // delayMicroseconds(10);
+ //// digitalWrite(pinTrig, LOW);
+ // duration = pulseIn(pinEcho, HIGH);
+  //distance = (duration/2) / 29.1;
+ // Serial.print("Distance: ");
+ // Serial.print(distance);
+  //Serial.println(" cm");
   //Si esta habilitado sensor VL6180X, se comenta el bloque de medición de distancia con HC-SR04 y se descomenta el bloque de medición con el sensor
-  float lux = sensor.readLux(VL6180X_ALS_GAIN_1);
-  range = sensor.readRange();
+  float lux = vl.readLux(VL6180X_ALS_GAIN_1);
+  range = vl.readRange();
   Serial.print("Range: ");  
-  Serial.print(range);
+  Serial.println(range);
 }
 void setup() {
-  Serial.begin(115200);
-  Wire.begin();
-  motorD.attach(pinMotorD);
-  motorI.attach(pinMotorI);
-  pinMode(pinTrig, OUTPUT);
-  pinMode(pinEcho, INPUT);
+  Serial.begin(9600);
+  //Wire.begin();
+
+  //pinMode(pinTrig, OUTPUT);
+  //pinMode(pinEcho, INPUT);
   //si tiene habilitado VL6180X, se comenta el bloque de medición de distancia con HC-SR04 y se descomenta el bloque de inicialización del sensor
-  if (!sensor.begin()) {
+  if (!vl.begin()) {
     Serial.println("Failed to initialize VL6180X sensor!");
     while (1);
   }
 }
 void loop(){
   Medir_Distancia();
-  if (distance < 20 || range < 20){
-    MotorD(1);//Go on
-    MotorI(1);
-  }
-  else{
-    MotorD(0);//Gira
-    MotorI(0);
-  }
+  Serial.println(analogRead(suelo));
+  
 } 
