@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include "ESP32Servo.h"
+#include "Adafruit_VL6180X.h"
 /*
 This firmware control 2 servos continuous rotation and read a distance sensor (HC-SR04) or a VL680 laser
 The students must code the logic to control the robot for a sumo fight with a other similar robot. For this
@@ -10,9 +11,11 @@ The students must code the logic to control the robot for a sumo fight with a ot
 #define pinMotorI 33
 #define pinTrig 25
 #define pinEcho 26  
+Adafruit_VL6180X sensor;//constructor of the sensor
 Servo motorD;
 Servo motorI;
 long duration, distance;
+uint8_t range=0;
 void MotorD(int sentidoD){
   if (sentidoD == 1){
     motorD.write(180);
@@ -47,6 +50,11 @@ void Medir_Distancia(){
   Serial.print("Distance: ");
   Serial.print(distance);
   Serial.println(" cm");
+  //Si esta habilitado sensor VL6180X, se comenta el bloque de medición de distancia con HC-SR04 y se descomenta el bloque de medición con el sensor
+  float lux = sensor.readLux(VL6180X_ALS_GAIN_1);
+  range = sensor.readRange();
+  Serial.print("Range: ");  
+  Serial.print(range);
 }
 void setup() {
   Serial.begin(115200);
@@ -55,10 +63,15 @@ void setup() {
   motorI.attach(pinMotorI);
   pinMode(pinTrig, OUTPUT);
   pinMode(pinEcho, INPUT);
+  //si tiene habilitado VL6180X, se comenta el bloque de medición de distancia con HC-SR04 y se descomenta el bloque de inicialización del sensor
+  if (!sensor.begin()) {
+    Serial.println("Failed to initialize VL6180X sensor!");
+    while (1);
+  }
 }
 void loop(){
   Medir_Distancia();
-  if (distance < 20){
+  if (distance < 20 || range < 20){
     MotorD(1);//Go on
     MotorI(1);
   }
