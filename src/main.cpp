@@ -7,15 +7,12 @@ This firmware control 2 servos continuous rotation and read a distance sensor (H
 The students must code the logic to control the robot for a sumo fight with a other similar robot. For this
  purpose, the students code must be coded in void loop() function.
 */
-#define pinMotorD 32
-#define pinMotorI 33
+#define pinMotorD 12
+#define pinMotorI 13
 #define pinTrig 25
 #define pinEcho 26  
 #define suelo 4
-#define IB1 25
-#define IA1 26
-#define IB2 27
-#define IA2 14
+
 Adafruit_VL6180X vl = Adafruit_VL6180X();//constructor of the sensor
 Servo motorD;
 Servo motorI;
@@ -64,12 +61,9 @@ void Medir_Distancia(){
 void setup() {
   Serial.begin(9600);
   pinMode(suelo, INPUT);
-  pinMode(IB1, OUTPUT);
-  pinMode(IA1, OUTPUT);
-  pinMode(IB2, OUTPUT);
-  pinMode(IA2, OUTPUT);
+  motorD.attach(pinMotorD);
+  motorI.attach(pinMotorI);
   //Wire.begin();
-
   //pinMode(pinTrig, OUTPUT);
   //pinMode(pinEcho, INPUT);
   //si tiene habilitado VL6180X, se comenta el bloque de medición de distancia con HC-SR04 y se descomenta el bloque de inicialización del sensor
@@ -80,7 +74,6 @@ void setup() {
 }
 void loop(){
   Medir_Distancia();
-  digitalWrite(IB1, LOW);
-  digitalWrite(IB2, HIGH);
+
   
 } 
